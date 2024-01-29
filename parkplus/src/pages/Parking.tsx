@@ -22,7 +22,7 @@ const Parking: React.FC = () => {
   const navigate = useNavigate();
 
   // Number of blocks to display in each row
-  const blocksPerRow = 18;
+  const blocksPerRow = 15;
 
   // Event handler for adding a car to a random available parking spot
   const handleAdd = () => {

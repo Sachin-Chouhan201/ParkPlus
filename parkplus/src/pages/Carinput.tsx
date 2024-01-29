@@ -12,21 +12,20 @@ const Carinput: React.FC = () => {
   // State variables for car registration and parking time
   const [carRegistration, setCarRegistration] = useState("");
   const [parkingTime, setParkingTime] = useState("");
-  const currentTime = new Date().toLocaleTimeString();
+  
   // React Router hooks for location and navigation
   const location = useLocation();
   const navigate = useNavigate();
   const id = location.state; // Extracting 'id' from the location state
 
-  console.log("hello inside the Car input");
-
   // Recoil state hook to update the global state
   const setParkState = useSetRecoilState(blocksState);
 
-  // Function to set the current time to the 'parkingTime' state
   // Function to handle form submission
   const handleSubmit = () => {
-    setParkingTime(currentTime);
+    // Set the current time to the 'parkingTime' state
+    setParkingTime(new Date().toLocaleTimeString());
+
     // Update Recoil state with the new parking information
     setParkState((prevParkState) => {
       return prevParkState.map((parkingSpace) => {
@@ -82,15 +81,19 @@ const Carinput: React.FC = () => {
           {/* Car Registration Input */}
           <TextField
             type="text"
-            label="Car Registration Number"
+            label="Car Registration Number in Format MP 09 NP 3232"
             variant="outlined"
             onChange={(e) => {
-              const value = e.target.value;
-              if (value.startsWith(" ")) {
-                setCarRegistration(value.trimStart());
-              } else {
-                setCarRegistration(value);
-              }
+              const value = e.target.value.toUpperCase();
+              const regex = /^[A-Za-z]{2}\s\d{2}\s[A-Za-z]{2}\s\d{4}$/;
+
+              if (regex.test(value)) {
+                if (value.startsWith(" ")) {
+                  setCarRegistration(value.trimStart());
+                } else {
+                  setCarRegistration(value);
+                }
+              } 
             }}
             sx={{ margin: "20px", width: "95%" }}
           />
@@ -98,7 +101,7 @@ const Carinput: React.FC = () => {
           <Box style={{ display: "flex", alignItems: "center", gap: "1" }}>
             <TextField
               type="text"
-              label={currentTime}
+              label={new Date().toLocaleTimeString()}
               variant="outlined"
               value={parkingTime}
               disabled
