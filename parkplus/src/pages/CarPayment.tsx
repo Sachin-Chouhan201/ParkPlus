@@ -28,25 +28,31 @@ const CarPayment: React.FC<CarProps> = () => {
   };
 
   useEffect(() => {
-    // Calculate time difference and update fare
     const time1 = new Date("2000/01/01 " + parkState[id - 1].parked_at).getTime();
-
-    const intervalId = setInterval(() => {
+  
+    const calculateFare = () => {
       const currentTime = performance.now();
       const timeElapsed: number = (currentTime - time1) / (1000 * 60 * 60);
-
+  
       setCurr(new Date(currentTime).toLocaleTimeString());
-
+  
       if (timeElapsed <= 2) {
         setFare(10);
       } else {
         const extraHours = Math.ceil(timeElapsed - 2);
         setFare(10 + extraHours * 10);
       }
-    }, 100);
-
-    // Cleanup the interval
-    return () => clearInterval(intervalId);
+  
+      // Calculate fare every 100 milliseconds
+      setTimeout(calculateFare, 1000);
+    };
+  
+    calculateFare();
+  
+    return () => {
+      // Clear any remaining timeouts when component unmounts
+      clearTimeout(undefined);
+    };
   }, [id, parkState]);
 
   const fetchPay = async () => {

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSetRecoilState } from "recoil";
+import React, { useState, useEffect } from "react";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 import { blocksState } from "../Atom/blocksState";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -7,12 +7,14 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
+import toast, { Toaster } from "react-hot-toast";
+import "react-toastify/dist/ReactToastify.css";
 
 const Carinput: React.FC = () => {
-  // State variables for car registration and parking time
+  // State variable for car registration
   const [carRegistration, setCarRegistration] = useState("");
-  const [parkingTime, setParkingTime] = useState("");
-  
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+
   // React Router hooks for location and navigation
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,38 +23,64 @@ const Carinput: React.FC = () => {
   // Recoil state hook to update the global state
   const setParkState = useSetRecoilState(blocksState);
 
+  // Recoil hook to get the current state
+  const parkState = useRecoilValue(blocksState);
 
-  
   // Function to handle form submission
   const handleSubmit = () => {
+    // Check if the car number is already present
+    const isCarAlreadyParked = parkState.some(
+      (parkingSpace) =>
+        parkingSpace.Car_no &&
+        parkingSpace.Car_no.toUpperCase() === carRegistration.toUpperCase()
+    );
+
+    if (isCarAlreadyParked) {
+      // Car is already parked, clear the input and show a toast message
+      setCarRegistration("");
+      toast.error("Car number already present");
+      return;
+    }
+
     // Set the current time to the 'parkingTime' state
-    setParkingTime(new Date().toLocaleTimeString());
+    const currentTime = new Date().toLocaleTimeString();
 
     // Update Recoil state with the new parking information
-    setParkState((prevParkState) => {
-      return prevParkState.map((parkingSpace) => {
-        if (parkingSpace.id === id) {
-          return {
-            ...parkingSpace,
-            parked: true,
-            parked_at: parkingTime,
-            Car_no: carRegistration,
-          };
-        } else {
-          return parkingSpace;
-        }
-      });
-    });
+    setParkState((prevParkState) =>
+      prevParkState.map((parkingSpace) =>
+        parkingSpace.id === id
+          ? {
+              ...parkingSpace,
+              parked: true,
+              parked_at: currentTime,
+              Car_no: carRegistration,
+            }
+          : parkingSpace
+      )
+    );
 
     // Navigate to the '/parking' route after submission
     navigate("/parking");
   };
-  React.useEffect(() => {
+
+  useEffect(() => {
     // Save state to local storage whenever the block state changes
-    localStorage.setItem("blocksState", JSON.stringify(setParkState ));
-  }, [setParkState ]);
+    localStorage.setItem("blocksState", JSON.stringify(parkState));
+  }, [parkState]);
+
+  useEffect(() => {
+    // Update current time every second
+    const intervalId = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <>
+      <Toaster position="top-center" reverseOrder={false} />
       {/* Go Back Button */}
       <Button variant="contained" onClick={() => navigate("/parking")}>
         Go Back
@@ -88,17 +116,11 @@ const Carinput: React.FC = () => {
             type="text"
             label="Car Registration Number in Format MP 09 NP 3232"
             variant="outlined"
+          //  value={carRegistration}
             onChange={(e) => {
               const value = e.target.value.toUpperCase();
               const regex = /^[A-Za-z]{2}\s\d{2}\s[A-Za-z]{2}\s\d{4}$/;
-
-              if (regex.test(value)) {
-                if (value.startsWith(" ")) {
-                  setCarRegistration(value.trimStart());
-                } else {
-                  setCarRegistration(value);
-                }
-              } 
+              regex.test(value) ? setCarRegistration(value) : setCarRegistration("");
             }}
             sx={{ margin: "20px", width: "95%" }}
           />
@@ -106,9 +128,8 @@ const Carinput: React.FC = () => {
           <Box style={{ display: "flex", alignItems: "center", gap: "1" }}>
             <TextField
               type="text"
-              label={new Date().toLocaleTimeString()}
               variant="outlined"
-              value={parkingTime}
+              value={currentTime}
               disabled
               sx={{ margin: "20px" }}
             />

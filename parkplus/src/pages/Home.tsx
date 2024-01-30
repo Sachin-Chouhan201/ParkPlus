@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 import { numberofBlocks } from '../Atom/numberofBlocks';
-import 'react-toastify/dist/ReactToastify.css';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -25,36 +23,37 @@ const Home: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
-    setSpace(value >= 0 ? value : 0);
+    setSpace(value >= 0 && value <= 121 ? value : 0);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (space > 0) {
-      console.log('Number of parking spaces: home page', space);
+    console.log('Number of parking spaces: home page', space);
+        // Save the number of parking spaces to local storage
+    localStorage.setItem('numberofBlocks', space.toString());
   
-      // Save the number of parking spaces to local storage
-      localStorage.setItem('numberofBlocks', space.toString());
-  
-      // Use the callback to ensure data is set before navigating
-      const storedSpace = localStorage.getItem('numberofBlocks');
-      console.log('Number of parking spaces: home page in local storage', storedSpace);
-      
-      navigate('/parking');
-    } else {
-      toast.error('Please enter a valid number greater than zero.');
-    }
+    // Use the callback to ensure data is set before navigating
+    const storedSpace = localStorage.getItem('numberofBlocks');
+    console.log('Number of parking spaces: home page in local storage', storedSpace);
+    
+    navigate('/parking');
   };
-  
-  
 
   return (
-    <Container maxWidth="sm">
-      <Toaster position="top-center" reverseOrder={false} />
+    <Container
+      maxWidth="sm"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+      }}
+    >
       <Typography variant="h4" align="center" gutterBottom>
         Welcome to ParkPlus
       </Typography>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <TextField
           type="number"
           label="Enter number of parking spaces"
@@ -62,13 +61,13 @@ const Home: React.FC = () => {
           fullWidth
           onChange={handleChange}
           required
+          inputProps={{ min: 1, max: 121 }}
         />
-        <div>
-          <Button 
+        <div style={{ marginTop: '16px' }}>
+          <Button
             type="submit"
             variant="contained"
             color="primary"
-            style={{ marginTop: '16px', alignItems: 'center', justifyContent: 'center', display: 'flex', marginLeft: 'auto', marginRight: 'auto' }}
           >
             Start Parking
           </Button>
