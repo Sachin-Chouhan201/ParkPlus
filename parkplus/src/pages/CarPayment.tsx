@@ -13,7 +13,6 @@ interface CarProps {
 }
 
 const CarPayment: React.FC<CarProps> = () => {
-  // React Router hooks for navigation and location
   const navigate = useNavigate();
   const [parkState, setParkState] = useRecoilState(blocksState);
   const [fare, setFare] = useState(0);
@@ -22,6 +21,11 @@ const CarPayment: React.FC<CarProps> = () => {
   const [isDisabled, setDisabled] = useState<boolean>(true);
   const location = useLocation();
   const id = location.state;
+
+  // Function to save payment details to local storage
+  const savePaymentToLocalStorage = () => {
+    localStorage.setItem(`paymentStatus-${id}`, JSON.stringify({ paid: true, fare, timestamp: Date.now() }));
+  };
 
   useEffect(() => {
     // Calculate time difference and update fare
@@ -58,7 +62,7 @@ const CarPayment: React.FC<CarProps> = () => {
     const data = await res.json();
     console.log(data);
   };
-  
+
   const payDone = () => {
     setParkState((prevParkState) => {
       return prevParkState.map((parkingSpace) => {
@@ -75,16 +79,18 @@ const CarPayment: React.FC<CarProps> = () => {
         }
       });
     });
+
+    // Save payment details to local storage
+    savePaymentToLocalStorage();
+
     setLoading(false);
     navigate("/parking");
   };
 
-  // Function to handle payment initiation
   const handlePay = () => {
     setDisabled(false);
     fetchPay();
     setLoading(true);
-    // Simulate delay for payment process, then execute payDone
     setTimeout(payDone, 3000);
   };
 
@@ -98,7 +104,6 @@ const CarPayment: React.FC<CarProps> = () => {
         flexDirection: "column",
       }}
     >
-      {/* Go Back Button */}
       <Button
         variant="contained"
         onClick={() => {
@@ -109,7 +114,6 @@ const CarPayment: React.FC<CarProps> = () => {
       >
         Go Back
       </Button>
-      {/* Highlighted Border Container */}
       <Box
         style={{
           border: "4px solid #f0f0f0",
@@ -118,22 +122,19 @@ const CarPayment: React.FC<CarProps> = () => {
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center", // Center content horizontally
+          alignItems: "center",
         }}
       >
         <div>
           {loading ? (
             <div>
-              {/* Payment in progress message */}
               <Typography variant="h4">
                 Payment In progress Please wait...
               </Typography>
-              {/* Loading gif */}
               <img src={myGif} alt="my-gif" />
             </div>
           ) : (
             <>
-              {/* Car Entry Information */}
               <Typography variant="h4">Car Entry</Typography>
               <div>
                 <p>Car Registration Number: {parkState[id - 1].Car_no}</p>
@@ -141,7 +142,6 @@ const CarPayment: React.FC<CarProps> = () => {
                 <p>Current Time: {curr}</p>
                 <p>Fare: {fare}$</p>
               </div>
-              {/* Pay Button */}
               <Button
                 variant="contained"
                 onClick={handlePay}

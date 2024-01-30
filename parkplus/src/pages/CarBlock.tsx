@@ -2,8 +2,6 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 import { blocksState } from "../Atom/blocksState";
 import { useNavigate } from "react-router-dom";
-
-// Import Material-UI components
 import Button from "@mui/material/Button";
 
 interface CarBlockProps {
@@ -11,16 +9,11 @@ interface CarBlockProps {
 }
 
 const CarBlock: React.FC<CarBlockProps> = ({ id }) => {
-  // Get the current state of the parking blocks using Recoil
   const blockStateData = useRecoilValue(blocksState);
-
-  // Check if the current parking block is parked
+  const navigate = useNavigate();
+console.log(blocksState);
   const parked = blockStateData[id - 1].parked;
 
-  // React Router hook for navigation
-  const navigate = useNavigate();
-
-  // Event handler for the button click
   const handleClick = () => {
     if (!parked) {
       console.log("Car is not parked");
@@ -29,13 +22,15 @@ const CarBlock: React.FC<CarBlockProps> = ({ id }) => {
       console.log(id, parked);
       navigate("/parking/carDetails", { state: id });
     }
-
-    // Navigate to the car details page with the current block's id as state
   };
+
+  // Save state to local storage whenever the block state changes
+  React.useEffect(() => {
+    localStorage.setItem("blocksState", JSON.stringify(blockStateData));
+  }, [blockStateData]);
 
   return (
     <div>
-      {/* Material-UI Button for car block */}
       <Button
         style={{
           width: "100%",

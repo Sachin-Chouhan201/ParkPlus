@@ -1,38 +1,44 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CarBlock from "./CarBlock";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { blocksState } from "../Atom/blocksState";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 
-// Import Material-UI components
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 
 const Parking: React.FC = () => {
+  const navigate = useNavigate();
+  const setParkState = useSetRecoilState(blocksState);
+ // console.log(blocksState);
+  // Retrieve parking state from local storage or use default
+  useEffect(() => {
+    const storedState = localStorage.getItem('blocksState');
+    if (storedState) {
+      setParkState(JSON.parse(storedState));
+    }
+    console.log(blocksState);
+  }, [setParkState]);
+
   // Get the current state of parking blocks using Recoil
   const parkState = useRecoilValue(blocksState);
 
   // Calculate the number of rows needed based on the number of blocks per row
   const numRows = Math.ceil(parkState.length / 10);
 
-  // React Router hook for navigation
-  const navigate = useNavigate();
-
   // Number of blocks to display in each row
   const blocksPerRow = 15;
 
   // Event handler for adding a car to a random available parking spot
   const handleAdd = () => {
-    // Filter out parking spots that are already occupied
     const availableParking = parkState.filter((obj) => !obj.parked);
 
     if (availableParking.length === 0) {
       toast.error("No available parking spots");
     } else {
-      // Select a random available parking spot
       const randomIndex = Math.floor(Math.random() * availableParking.length);
       const selectedParkingSpot = availableParking[randomIndex];
 
@@ -43,12 +49,15 @@ const Parking: React.FC = () => {
     }
   };
 
+  // Save the parking state to local storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('blocksState', JSON.stringify(parkState));
+  }, [parkState]);
+
   return (
     <>
-      {/* Toast notifications */}
       <Toaster position="top-center" reverseOrder={false} />
 
-      {/* Add Car button positioned at the top left */}
       <Button
         onClick={handleAdd}
         type="submit"
@@ -65,7 +74,6 @@ const Parking: React.FC = () => {
         Add Car
       </Button>
 
-      {/* Container for the grid of parking blocks */}
       <Container
         style={{
           display: "flex",
@@ -74,7 +82,6 @@ const Parking: React.FC = () => {
           height: "100vh",
         }}
       >
-        {/* Grid for displaying parking blocks */}
         <Grid
           container
           style={{ display: "flex", alignItems: "center", width: "50%" }}
@@ -90,7 +97,6 @@ const Parking: React.FC = () => {
               flexWrap: "wrap",
             }}
           >
-            {/* Mapping through rows and blocks to display CarBlock components */}
             {Array.from({ length: numRows }).map((_, rowIndex) => (
               <Grid
                 item
@@ -114,7 +120,6 @@ const Parking: React.FC = () => {
         </Grid>
       </Container>
 
-      {/* Go back button positioned at the bottom left */}
       <Button
         onClick={() => navigate("/")}
         type="submit"
@@ -126,7 +131,6 @@ const Parking: React.FC = () => {
       </Button>
     </>
   );
-
 };
 
 export default Parking;

@@ -21,6 +21,8 @@ const Carinput: React.FC = () => {
   // Recoil state hook to update the global state
   const setParkState = useSetRecoilState(blocksState);
 
+
+  
   // Function to handle form submission
   const handleSubmit = () => {
     // Set the current time to the 'parkingTime' state
@@ -45,7 +47,10 @@ const Carinput: React.FC = () => {
     // Navigate to the '/parking' route after submission
     navigate("/parking");
   };
-
+  React.useEffect(() => {
+    // Save state to local storage whenever the block state changes
+    localStorage.setItem("blocksState", JSON.stringify(setParkState ));
+  }, [setParkState ]);
   return (
     <>
       {/* Go Back Button */}

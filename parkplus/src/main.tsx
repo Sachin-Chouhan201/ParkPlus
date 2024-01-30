@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 // git init
 // git add .
-// git commit -m "Done in Function Components"
-// git branch -M main
+// git commit -m "Done in local storage and test case are setuped 
+// git branch -M Local_storage
 // git remote add origin https://github.com/Sachin-201/parkplus.git
-// git push -u origin main
+// git push -u origin Local_storage
