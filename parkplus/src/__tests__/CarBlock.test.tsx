@@ -4,7 +4,6 @@ import { RecoilRoot } from "recoil";
 import { MemoryRouter } from "react-router-dom";
 import CarBlock from "../pages/CarBlock";
 import { blocksState } from "../Atom/blocksState";
-
 // Mock the useNavigate hook
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -53,6 +52,7 @@ describe("CarBlock component", () => {
       // Add more sample data if needed
     ];
 
+      
     render(
       <RecoilRoot initializeState={(snap) => snap.set(blocksState, blockStateData)}>
         <MemoryRouter>
@@ -87,5 +87,29 @@ describe("CarBlock component", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/parking/Register", {
       state: id,
     });
-  });
+
+     });
+     it('handles click event correctly', () => {
+      const id = 1;
+      const blockStateData = [
+        { id: 1, parked: true, parked_at: new Date().toISOString(), Car_no: 'ABC123' },
+        // Add more sample data if needed
+      ];
+  
+      render(
+        <RecoilRoot initializeState={(snap) => snap.set(blocksState, blockStateData)}>
+          <MemoryRouter>
+            <CarBlock id={id} />
+          </MemoryRouter>
+        </RecoilRoot>
+      );
+  
+      const detailsButton = screen.getByText(/Details of Car at 1/i);
+      fireEvent.click(detailsButton);
+  
+      // Ensure useNavigate was called with the correct arguments
+      expect(mockNavigate).toHaveBeenCalledWith('/parking/carDetails', {
+        state: id,
+      });
+    });
 });

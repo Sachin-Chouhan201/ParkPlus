@@ -149,3 +149,6 @@ const Carinput: React.FC = () => {
 };
 
 export default Carinput;
+
+
+//These test cases cover the rendering of the component, form submission, handling duplicate car registration numbers, and you can extend it with additional cases as needed.
