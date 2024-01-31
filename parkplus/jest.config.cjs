@@ -9,5 +9,13 @@ module.exports = {
       "\\.(jpg|jpeg|png|gif|webp|svg|ico|ttf|woff|woff2|eot)$": "identity-obj-proxy",
       '^recoil$': '<rootDir>/node_modules/recoil',
     },
-    setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+    // setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+    transformIgnorePatterns: [
+      "/node_modules/(?!react-toastify)", // Ignore node_modules except for react-toastify
+      "\\.css$"
+    ],
+    // eslint-disable-next-line no-dupe-keys
+    moduleNameMapper: {
+      '\\.css$': 'identity-obj-proxy',
+    },
   };

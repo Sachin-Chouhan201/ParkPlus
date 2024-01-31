@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { blocksState } from "../Atom/blocksState";
-import myGif from "../assets/paymneet.gif";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -86,7 +85,6 @@ const CarPayment: React.FC<CarProps> = () => {
       });
     });
 
-    // Save payment details to local storage
     savePaymentToLocalStorage();
 
     setLoading(false);
@@ -137,7 +135,7 @@ const CarPayment: React.FC<CarProps> = () => {
               <Typography variant="h4">
                 Payment In progress Please wait...
               </Typography>
-              <img src={myGif} alt="my-gif" />
+              <img src={"https://tenor.com/view/mc-gregor-pay-up-gif-8865194"} alt="my-gif" />
             </div>
           ) : (
             <>

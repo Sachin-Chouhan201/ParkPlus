@@ -19,7 +19,7 @@ console.log(blocksState);
       console.log("Car is not parked");
       navigate("/parking/Register", { state: id });
     } else {
-      console.log(id, parked);
+     // console.log(id, parked);
       navigate("/parking/carDetails", { state: id });
     }
   };
@@ -35,7 +35,7 @@ console.log(blocksState);
         style={{
           width: "100%",
           height: "100%",
-          backgroundColor: parked ? "LightGray" : " ",
+          backgroundColor: parked ? "Red" : "Green",
           color: "black",
           border: "1px solid black",
           margin: "4px",
