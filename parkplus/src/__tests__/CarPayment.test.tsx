@@ -70,3 +70,32 @@ describe('CarPayment component', () => {
 
   // Add more test cases as needed to cover other lines
 });
+
+
+
+const mockLocation = {
+  state: 1
+};
+
+test('calls payDone function when Pay button is pressed', async () => {
+  const mockParkingData = [
+    { id: 0, Car_no: 'ABC123', parked_at: new Date().toLocaleTimeString(), parked: true },
+    { id: 1, Car_no: 'ABC123', parked_at: new Date().toLocaleTimeString(), parked: true },
+  ];
+  // const mockedResponse = { code: 200, description: 'OK' };
+
+  // jest.spyOn(axios, 'post').mockResolvedValueOnce(mockedResponse);
+
+  const { getByText } = render(
+    <RecoilRoot initializeState={({ set }) => set(blocksState, mockParkingData)}>
+      <MemoryRouter initialEntries={[{ pathname: '/lot/car', state: mockLocation.state }]}>
+        <CarPayment id={0} />
+      </MemoryRouter>
+    </RecoilRoot>
+  );
+
+  const payButton = getByText('Pay');
+
+  fireEvent.click(payButton);
+
+});
