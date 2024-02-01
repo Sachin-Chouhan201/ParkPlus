@@ -22,9 +22,9 @@ const CarPayment: React.FC<CarProps> = () => {
   const id = location.state;
 
   // Function to save payment details to local storage
-  const savePaymentToLocalStorage = () => {
-    localStorage.setItem(`paymentStatus-${id}`, JSON.stringify({ paid: true, fare, timestamp: Date.now() }));
-  };
+  // const savePaymentToLocalStorage = () => {
+  //   localStorage.setItem(`paymentStatus-${id}`, JSON.stringify({ paid: true, fare, timestamp: Date.now() }));
+  // };
 
   useEffect(() => {
     const time1 = new Date("2000/01/01 " + parkState[id - 1].parked_at).getTime();
@@ -85,7 +85,7 @@ const CarPayment: React.FC<CarProps> = () => {
       });
     });
 
-    savePaymentToLocalStorage();
+    // savePaymentToLocalStorage();
 
     setLoading(false);
     navigate("/parking");
