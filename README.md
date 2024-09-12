@@ -21,7 +21,7 @@ This project, named Park Plus, is a web-based parking lot management system desi
 
 **Setup Instructions**
 
-1. **Clone the repository**: `git clone https://github.com/vgrashal16/Park_Plus.git`
+1. **Clone the repository**: `git clone https://github.com/Sachin-Chouhan201/parkplus.git`
 2. **Install dependencies**: `npm install`
 3. **Start the development server**: `npm run dev`
 4. **Access the application at**: [http://localhost:5713](http://localhost:5713)
